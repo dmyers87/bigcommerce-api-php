@@ -261,14 +261,15 @@ class Client
         $apiVersion = 2;
         $api_path = self::$api_path;
 
-        if (strpos($path, '/customers/subscribers') !== false) {
+        if ($resource === 'Subscriber') {
             $apiVersion = 3;
             $api_path = str_replace('v2', 'v3', $api_path);   
         }
 
         $response = self::connection()->get($api_path . $path);
 
-        if ($apiVersion == 3) {
+        if ($apiVersion === 3) {
+            // Version 3 endpoint response data is found here
             $response = $response->data;
         }
 
