@@ -1029,6 +1029,7 @@ class Client
      */
     public static function getSubscriber($filter = array())
     {
+        $filter = Filter::create($filter);
         return self::getResource('/customers/subscribers' . $filter->toQuery(), 'Subscriber');
     }
 
