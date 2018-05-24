@@ -285,7 +285,20 @@ class Client
      */
     public static function getResource($path, $resource = 'Resource')
     {
-        $response = self::connection()->get(self::$api_path . $path);
+        $apiVersion = 2;
+        $api_path = self::$api_path;
+
+        if ($resource === 'Subscriber') {
+            $apiVersion = 3;
+            $api_path = str_replace('v2', 'v3', $api_path);   
+        }
+
+        $response = self::connection()->get($api_path . $path);
+
+        if ($apiVersion === 3) {
+            // Version 3 endpoint response data is found here
+            $response = $response->data;
+        }
 
         return self::mapResource($resource, $response);
     }
@@ -1006,6 +1019,18 @@ class Client
     {
         $filter = Filter::create($filter);
         return self::getCollection('/customers/subscribers' . $filter->toQuery(), 'Subscriber');
+    }
+
+    /**
+     * A single subscriber.
+     *
+     * @param array $filter
+     * @return Resources\Subscriber
+     */
+    public static function getSubscriber($filter = array())
+    {
+        $filter = Filter::create($filter);
+        return self::getResource('/customers/subscribers' . $filter->toQuery(), 'Subscriber');
     }
 
     /**
